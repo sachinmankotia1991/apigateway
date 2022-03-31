@@ -1,0 +1,33 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: apigateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+        - id: usermsid
+          uri: lb://USERMS
+          predicates:
+            - Path= /apigw-userms/**
+          filters:
+            - RewritePath= /apigw-userms/(?<path>.*), /$\{path}
+
+        - id: ordermsid
+          uri: lb://ORDERMS
+          predicates:
+            - Path= /apigw-orderms/**
+          filters:
+            - RewritePath= /apigw-orderms/(?<path>.*), /$\{path}
+
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka
